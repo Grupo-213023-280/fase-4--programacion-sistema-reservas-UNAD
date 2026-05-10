@@ -1,232 +1,111 @@
-# ============================================================
-# SISTEMA DE CONTROL DE DISPOSITIVOS INTELIGENTES- EJERCISIO 5 
-# Fase 3 - Modelos de herencia y polimorfismo y gestion de metodos 
-# Curso: Programación - UNAD
+# INFORMACION DEL COMPONENTE PRACTICO  Ejercicio 1
+# Fase 4 Componente Práctico-Practicas Simuladas Sistema de Gestion de clienetes, Servicios y Reservas 
+# Curso: Programación - UNAD 213023_280
 # Autor: William Beltrán
+# Claudia Lorena Franco
+# Farid Camilo Buitrago
 # ============================================================
 
 # ============================================
 # NATIONAL OPEN AND DISTANCE UNIVERSITY (UNAD)
 # COURSE: PROGRAMMING
-# ACTIVITY: PHASE 3 - OOP
-# STUDENT: [YOUR NAME]
+# ACTIVITY: PHASE 4 - OOP
+# STUDENT: William Beltrán
+# Claudia Lorena Franco
+# Farid Camilo Buitrago
 # ============================================
 
-# This program implements a Smart Device Control System using
-# Object-Oriented Programming (OOP) principles.
-#
+# Practical Exercise - Simulated Practices: Customer, Service, and Reservation Management System
+# Course: Programming - UNAD 213023_280
+# Author: William Beltrán
+# Claudia Lorena Franco
+# Farid Camilo Buitrago
 # Concepts applied:
-# - Inheritance
-# - Polymorphism
-# - Method Overloading (simulated with optional parameters)
-# - Encapsulation
-#
-# A graphical user interface (GUI) is also implemented using Tkinter,
-# allowing user interaction with the system.
+# including custom exceptions, use of try/except, try/except/else, try/except/finally blocks, and exception chaining.
 
 import tkinter as tk
+
 
 # ============================================
 # BASE CLASS (ENCAPSULATION)
 # ============================================
 
-class Device:
-    def __init__(self, name):
-        self._name = name
-        self._state = False
+"""
+Main system execution
+Simulates system operations
+"""
 
-    def turn_on(self):
-        self._state = True
-        return f"{self._name} turned ON"
-
-    def turn_off(self):
-        self._state = False
-        return f"{self._name} turned OFF"
-
-    def status(self):
-        return f"{self._name}: {'ON' if self._state else 'OFF'}"
-
-    def get_name(self):
-        return self._name
+from cliente import Client
+from servicio import RoomReservation, EquipmentRental, Consulting
+from reserva import Reservation
+from logger import log_event
 
 
-# ============================================
-# CHILD CLASSES
-# ============================================
+def simulate_operations():
 
-class SmartBulb(Device):
+    operations = []
 
-    def turn_on(self):
-        self._state = True
-        return f"{self._name} light is ON"
+    try:
 
-    def turn_off(self):
-        self._state = False
-        return f"{self._name} light is OFF"
+        c1 = Client("William", "william@email.com")
+        s1 = RoomReservation("Meeting Room", 50)
+        r1 = Reservation(c1, s1, 2)
 
-    def status(self):
-        return f"Bulb {self._name}: {'ON' if self._state else 'OFF'}"
+        cost = r1.process()
+        r1.confirm()
 
-    #  SOBRECARGA REAL (VARIOS ESCENARIOS)
-    def configure(self, mode, intensity=None, time=None):
-        if intensity is None and time is None:
-            return f"{self._name} set to mode: {mode}"
-        elif time is None:
-            return f"{self._name} set to mode: {mode}, intensity: {intensity}"
-        else:
-            return f"{self._name} set to mode: {mode}, intensity: {intensity}, time: {time}"
+        operations.append((c1.show_client(), cost, r1.status))
+
+    except Exception as e:
+        log_event(str(e))
 
 
-class SmartCurtain(Device):
+    try:
 
-    def turn_on(self):
-        self._state = True
-        return f"{self._name} curtain OPEN"
+        # invalid email
+        c2 = Client("Pedro", "correo_invalido")
 
-    def turn_off(self):
-        self._state = False
-        return f"{self._name} curtain CLOSED"
-
-    def status(self):
-        return f"Curtain {self._name}: {'OPEN' if self._state else 'CLOSED'}"
-
-    def configure(self, mode, intensity=None, time=None):
-        if intensity is None and time is None:
-            return f"{self._name} mode: {mode}"
-        elif time is None:
-            return f"{self._name} mode: {mode}, opening: {intensity}%"
-        else:
-            return f"{self._name} mode: {mode}, opening: {intensity}%, time: {time}"
+    except Exception as e:
+        log_event(str(e))
 
 
-class SmartThermostat(Device):
+    try:
 
-    def turn_on(self):
-        self._state = True
-        return f"{self._name} thermostat ON"
+        s2 = EquipmentRental("Projector", 30)
+        r2 = Reservation(c1, s2, 3)
 
-    def turn_off(self):
-        self._state = False
-        return f"{self._name} thermostat OFF"
+        cost = r2.process()
 
-    def status(self):
-        return f"Thermostat {self._name}: {'ON' if self._state else 'OFF'}"
+        operations.append(("Equipment rental", cost))
 
-    def configure(self, mode, intensity=None, time=None):
-        if intensity is None and time is None:
-            return f"{self._name} mode: {mode}"
-        elif time is None:
-            return f"{self._name} mode: {mode}, temperature: {intensity}°C"
-        else:
-            return f"{self._name} mode: {mode}, temperature: {intensity}°C, time: {time}"
+    except Exception as e:
+        log_event(str(e))
 
 
-# ============================================
-# CONTROL CENTER
-# ============================================
+    try:
 
-class ControlCenter:
-    def __init__(self):
-        self.devices = []
+        s3 = Consulting("Software consulting", 100)
+        r3 = Reservation(c1, s3, 5)
 
-    def add_device(self, device):
-        self.devices.append(device)
+        cost = r3.process()
 
-    def turn_on_all(self):
-        return [d.turn_on() for d in self.devices]
+        operations.append(("Consulting", cost))
 
-    def turn_off_all(self):
-        return [d.turn_off() for d in self.devices]
-
-    def get_status(self):
-        return [d.status() for d in self.devices]
-
-    #  CONFIGURACIÓN INDIVIDUAL (REQUERIMIENTO DEL ANEXO)
-    def configure_device(self, name, mode, intensity=None, time=None):
-        for d in self.devices:
-            if d.get_name() == name:
-                return d.configure(mode, intensity, time)
-        return "Device not found"
+    except Exception as e:
+        log_event(str(e))
 
 
-# ============================================
-# GUI (TKINTER)
-# ============================================
-
-class App:
-    def __init__(self, root):
-        self.control = ControlCenter()
-
-        # Devices
-        self.control.add_device(SmartBulb("Living Room"))
-        self.control.add_device(SmartCurtain("Main Window"))
-        self.control.add_device(SmartThermostat("Home"))
-
-        root.title("Smart Home Control Panel")
-
-        tk.Button(root, text="Turn ON All", command=self.turn_on).pack()
-        tk.Button(root, text="Turn OFF All", command=self.turn_off).pack()
-        tk.Button(root, text="Show Status", command=self.show_status).pack()
-
-        # CONFIG SECTION (OBLIGATORIA)
-        tk.Label(root, text="Configure Device").pack()
-
-        self.device_entry = tk.Entry(root)
-        self.device_entry.insert(0, "Device name")
-        self.device_entry.pack()
-
-        self.mode_entry = tk.Entry(root)
-        self.mode_entry.insert(0, "Mode")
-        self.mode_entry.pack()
-
-        self.intensity_entry = tk.Entry(root)
-        self.intensity_entry.insert(0, "Intensity (optional)")
-        self.intensity_entry.pack()
-
-        self.time_entry = tk.Entry(root)
-        self.time_entry.insert(0, "Time (optional)")
-        self.time_entry.pack()
-
-        tk.Button(root, text="Configure", command=self.configure).pack()
-
-        self.output = tk.Text(root, height=10, width=50)
-        self.output.pack()
-
-    def turn_on(self):
-        self.print_output(self.control.turn_on_all())
-
-    def turn_off(self):
-        self.print_output(self.control.turn_off_all())
-
-    def show_status(self):
-        self.print_output(self.control.get_status())
-
-    def configure(self):
-        name = self.device_entry.get()
-        mode = self.mode_entry.get()
-
-        intensity = self.intensity_entry.get()
-        time = self.time_entry.get()
-
-        # Convert empty strings to None
-        intensity = intensity if intensity != "" else None
-        time = time if time != "" else None
-
-        result = self.control.configure_device(name, mode, intensity, time)
-        self.print_output([result])
-
-    def print_output(self, messages):
-        self.output.delete(1.0, tk.END)
-        for msg in messages:
-            if msg:
-                self.output.insert(tk.END, str(msg) + "\n")
+    return operations
 
 
-# ============================================
-# MAIN
-# ============================================
+def main():
+
+    results = simulate_operations()
+
+    for r in results:
+
+        print(r)
+
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = App(root)
-    root.mainloop()
+    main()
