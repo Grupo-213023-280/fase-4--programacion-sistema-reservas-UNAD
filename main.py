@@ -35,8 +35,8 @@ Main system execution
 Simulates system operations
 """
 
-from cliente import Client
-from servicio import RoomReservation, EquipmentRental, Consulting
+from cliente import Cliente
+from servicios import ReservaSala, AlquilerEquipo, AsesoriaEspecializada
 from reserva import Reservation
 from logger import log_event
 
@@ -46,54 +46,40 @@ def simulate_operations():
     operations = []
 
     try:
-
-        c1 = Client("William", "william@email.com")
-        s1 = RoomReservation("Meeting Room", 50)
+        c1 = Cliente("William", "william@email.com")
+        
+        s1 = ReservaSala("Meeting Room", 50, 10)                    # nombre, precio, capacidad
         r1 = Reservation(c1, s1, 2)
 
         cost = r1.process()
         r1.confirm()
 
-        operations.append((c1.show_client(), cost, r1.status))
+        operations.append((c1.show_client() if hasattr(c1,'show_client') else str(c1), cost, r1.status))
 
     except Exception as e:
-        log_event(str(e))
-
+        print("Error en primera reserva:", e)
 
     try:
-
-        # invalid email
-        c2 = Client("Pedro", "correo_invalido")
-
+        # Email inválido (debe fallar)
+        c2 = Cliente("Pedro", "correo_invalido")
     except Exception as e:
-        log_event(str(e))
-
+        print("Error esperado con email:", e)
 
     try:
-
-        s2 = EquipmentRental("Projector", 30)
+        s2 = AlquilerEquipo("Projector", 30, "Proyector", 8)
         r2 = Reservation(c1, s2, 3)
-
         cost = r2.process()
-
         operations.append(("Equipment rental", cost))
-
     except Exception as e:
-        log_event(str(e))
-
+        print("Error en alquiler:", e)
 
     try:
-
-        s3 = Consulting("Software consulting", 100)
+        s3 = AsesoriaEspecializada("Software consulting", 100, "Juan Pérez", 2)
         r3 = Reservation(c1, s3, 5)
-
         cost = r3.process()
-
         operations.append(("Consulting", cost))
-
     except Exception as e:
-        log_event(str(e))
-
+        print("Error en asesoría:", e)
 
     return operations
 
