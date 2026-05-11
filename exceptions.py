@@ -7,10 +7,29 @@ Autor: Farid Camilo Buritica Buitrago
 Descripción: Excepciones personalizadas
 """
 
-class SistemaException(Exception):
-    def __init__(self, mensaje):
-        self.mensaje = mensaje
-        super().__init__(self.mensaje)
+class ReservationError(Exception):
+    """Excepción para errores en reservas"""
+    def __init__(self, message="Error en la reserva"):
+        self.message = message
+        super().__init__(self.message)
 
-class DatosInvalidosError(SistemaException):
-    pass
+
+class ClientError(Exception):
+    """Excepción para errores en clientes"""
+    def __init__(self, message="Error en el cliente"):
+        self.message = message
+        super().__init__(self.message)
+
+
+class ServiceError(Exception):
+    """Excepción para errores en servicios"""
+    def __init__(self, message="Error en el servicio"):
+        self.message = message
+        super().__init__(self.message)
+
+
+class DatosInvalidosError(Exception):
+    """Excepción para datos inválidos (usada en Cliente)"""
+    def __init__(self, message="Datos inválidos"):
+        self.message = message
+        super().__init__(self.message)
