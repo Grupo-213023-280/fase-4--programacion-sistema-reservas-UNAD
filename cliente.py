@@ -8,7 +8,7 @@ Descripción: Clase Cliente con encapsulación y validaciones robustas
 """
 
 from entidad_abstracta import EntidadAbstracta
-from excepciones import DatosInvalidosError
+from excptiones import DatosInvalidosError
 
 
 class Cliente(EntidadAbstracta):
