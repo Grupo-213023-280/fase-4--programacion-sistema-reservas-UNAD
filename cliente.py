@@ -1,62 +1,57 @@
-# ============================================================
-# INFORMACION DEL COMPONENTE PRACTICO  Ejercicio 1
-# Fase 4 Componente Práctico-Practicas Simuladas Sistema de Gestion de clienetes, Servicios y Reservas 
-# Curso: Programación - UNAD 213023_280
-# Autor: William Beltrán
-# Claudia Lorena Franco
-# Farid Camilo Buitrago
-# ============================================================
-
-# ============================================
-# NATIONAL OPEN AND DISTANCE UNIVERSITY (UNAD)
-# COURSE: PROGRAMMING
-# ACTIVITY: PHASE 4 - OOP
-# STUDENT: William Beltrán
-# Claudia Lorena Franco
-# Farid Camilo Buitrago
-# ============================================
-
-# Practical Exercise - Simulated Practices: Customer, Service, and Reservation Management System
-# Course: Programming - UNAD 213023_280
-# Author: William Beltrán
-# Claudia Lorena Franco
-# Farid Camilo Buitrago
-# Concepts applied:
-# including custom exceptions, use of try/except, try/except/else, try/except/finally blocks, and exception chaining.
-
-import tkinter as tk
-
-# ============================================
-# BASE CLASS (ENCAPSULATION) 1
-# ============================================
-
 """
-Client class
-Represents a company client
+Sistema Integral de Gestión de Clientes, Servicios y Reservas - Software FJ
+Curso: Programación 213023
+Universidad Nacional Abierta y Distancia - UNAD
+Archivo: cliente.py
+Autor: Farid Camilo Buritica Buitrago
+Descripción: Clase Cliente con encapsulación y validaciones robustas
 """
 
-from exceptions import ClientError
+from entidad_abstracta import EntidadAbstracta
+from excptions import DatosInvalidosError
 
 
-class Client:
+class Cliente(EntidadAbstracta):
+    """
+    Clase Cliente que hereda de EntidadAbstracta.
+    """
 
-    def __init__(self, name, email):
+    def __init__(self, id_cliente: str, nombre: str, email: str, telefono: str):
+        super().__init__(id_cliente)
+        self._validar_datos(nombre, email, telefono)
+        
+        self._nombre = nombre
+        self._email = email
+        self._telefono = telefono
+        self._reservas = []
 
-        if not name:
-            raise ClientError("Client name cannot be empty")
+    def _validar_datos(self, nombre: str, email: str, telefono: str):
+        if not nombre or len(nombre.strip()) < 3:
+            raise DatosInvalidosError("El nombre debe tener al menos 3 caracteres.")
 
-        if "@" not in email:
-            raise ClientError("Invalid email address")
+        if "@" not in email or "." not in email:
+            raise DatosInvalidosError("El email no es válido.")
 
-        self.__name = name
-        self.__email = email
+        if not telefono or len(telefono) < 7:
+            raise DatosInvalidosError("El teléfono no es válido.")
 
-    def get_name(self):
-        return self.__name
+    @property
+    def nombre(self) -> str:
+        return self._nombre
 
-    def get_email(self):
-        return self.__email
+    @property
+    def email(self) -> str:
+        return self._email
 
-    def show_client(self):
+    @property
+    def telefono(self) -> str:
+        return self._telefono
 
-        return f"Client: {self.__name} | Email: {self.__email}"
+    def agregar_reserva(self, id_reserva: str):
+        self._reservas.append(id_reserva)
+
+    def obtener_info(self) -> str:
+        return f"Cliente[{self.id}] - {self._nombre} | {self._email}"
+
+    def __str__(self):
+        return self.obtener_info()
