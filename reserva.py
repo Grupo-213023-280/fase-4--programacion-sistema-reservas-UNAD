@@ -60,6 +60,6 @@ class Reservation:
 
     def process(self):
 
-        cost = self.service.calculate_cost(self.duration)
+        cost = self.service.calcular_costo(self.duration)
 
         return cost

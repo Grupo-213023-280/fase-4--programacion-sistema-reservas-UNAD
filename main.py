@@ -46,22 +46,22 @@ def simulate_operations():
     operations = []
 
     try:
-        c1 = Cliente("William", "william@email.com")
+       c1 = Cliente("C001", "William", "william@email.com", "3001234567")
         
-        s1 = ReservaSala("Meeting Room", 50, 10)                    # nombre, precio, capacidad
-        r1 = Reservation(c1, s1, 2)
+       s1 = ReservaSala("Meeting Room", 50, 10)                    # nombre, precio, capacidad
+       r1 = Reservation(c1, s1, 2)
 
-        cost = r1.process()
-        r1.confirm()
+       cost = r1.process()
+       r1.confirm()
 
-        operations.append((c1.show_client() if hasattr(c1,'show_client') else str(c1), cost, r1.status))
+       operations.append((c1.show_client() if hasattr(c1,'show_client') else str(c1), cost, r1.status))
 
     except Exception as e:
         print("Error en primera reserva:", e)
 
     try:
         # Email inválido (debe fallar)
-        c2 = Cliente("Pedro", "correo_invalido")
+        c2 = Cliente("Pedro", "correo_invalido", "3000000000")
     except Exception as e:
         print("Error esperado con email:", e)
 
